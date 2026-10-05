@@ -276,11 +276,11 @@
   let cotizacion = null; // etapa con la que se le mostró el precio
   // Reglas de la clave por tipo de pago
   const CLAVES = {
-    EFECTIVO: { largo: 9,  numerica: true,  foto: false },
-    TARJETA:  { largo: 10, numerica: true,  foto: true  },
+    EFECTIVO: { largo: 9,  numerica: false, foto: false },
+    TARJETA:  { largo: 10, numerica: false, foto: true  },
     OTRO:     { largo: 18, numerica: false, foto: true  }   // CODI y transferencia
   };
-  const NOTA_TERMINAL = 'Continúa el proceso de pago en la terminal. Al terminar, ingresa la clave de rastreo de 10 dígitos del ticket o sube una foto del ticket.';
+  const NOTA_TERMINAL = 'Continúa el proceso de pago en la terminal. Al terminar, ingresa la clave de rastreo de 10 caracteres del ticket o sube una foto del ticket.';
   const $ = id => document.getElementById(id);
   const dinero = n => '$' + n.toLocaleString('es-MX');
 
@@ -454,8 +454,8 @@
   function ajustarCampoClave(){
     const clave = $('clave'), pago = $('tipoPago').value, r = reglaClave();
     $('claveLabel').textContent =
-      pago === 'EFECTIVO' ? 'Ingresa la clave de rastreo del pago en efectivo (9 dígitos)' :
-      pago === 'TARJETA'  ? 'Ingresa la clave de rastreo del ticket de la terminal (10 dígitos)' :
+      pago === 'EFECTIVO' ? 'Ingresa la clave de rastreo del pago en efectivo (9 caracteres)' :
+      pago === 'TARJETA'  ? 'Ingresa la clave de rastreo del ticket de la terminal (10 caracteres)' :
                             'Ingresa la clave de rastreo del pago';
     // Efectivo: sin foto
     $('bloqueFoto').hidden = !r.foto;
