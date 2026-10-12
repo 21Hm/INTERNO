@@ -11,13 +11,13 @@
 <style>
   :root{
     color-scheme: dark;
-    --negro:#0E0E10;            /* encabezado: negro mate sólido */
+    --negro:#0E0E10;
     --panel:rgba(8,8,10,.80);
-    --marino:#0F1E3D;           /* globo de la etapa */
+    --marino:#0F1E3D;
     --oro:#C9A227;
     --texto:#F4F5F7; --suave:#C3C8D2; --tenue:#8E96A5;
     --linea:rgba(255,255,255,.16); --campo:rgba(255,255,255,.07); --borde-campo:rgba(255,255,255,.24);
-    --error:#FF8A80; --ok:#3DBB7A;
+    --error:#FF8A80; --ok:#3DBB7A; --rojo:#FF5A4E;
   }
   *{box-sizing:border-box}
   [hidden]{display:none!important}
@@ -53,24 +53,22 @@
   .cuerpo{padding:0 22px 22px}
 
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .ancho{grid-column:1 / -1}
   @media (max-width:480px){.grid{grid-template-columns:1fr}}
   label{display:block;font-size:.88rem;font-weight:500;color:var(--suave);margin-bottom:5px}
   input,select{width:100%;font:inherit;padding:11px 12px;border:1.5px solid var(--borde-campo);border-radius:8px;background:var(--campo);color:#fff}
   input::placeholder{color:var(--tenue)}
+  input[readonly]{background:rgba(201,162,39,.10);border-color:rgba(201,162,39,.5);font-weight:700;letter-spacing:.08em}
   option{background:#16161a;color:#fff}
   input:focus,select:focus{outline:none;border-color:var(--oro);box-shadow:0 0 0 3px rgba(201,162,39,.25)}
   input.invalido,select.invalido{border-color:var(--error)}
   select:disabled{background:rgba(255,255,255,.03);color:var(--tenue)}
   .msg{font-size:.82rem;color:var(--error);min-height:1.1em;margin-top:3px}
 
-  /* Talón de precios (sección 2) y desglose con descuento (sección 3) */
   .talon{margin-top:18px;border:2px dashed rgba(255,255,255,.25);border-radius:10px;padding:14px 16px;display:grid;grid-template-columns:1fr auto;row-gap:4px;align-items:baseline}
   .talon span{color:var(--suave)}
   .talon strong{text-align:right}
   .talon .total{font-size:1.5rem;font-weight:800;color:var(--oro)}
-  .desglose{margin:0 0 4px;border-style:solid;border-color:rgba(61,187,122,.45);background:rgba(61,187,122,.06)}
-  .talon .tachado{text-decoration:line-through;color:var(--tenue);font-weight:500}
-  .talon .verde, .talon .total.verde{color:var(--ok)}
 
   .aviso{color:var(--suave);background:rgba(255,255,255,.06);border-radius:8px;padding:14px 16px;margin:0}
   .pago-img{display:block;max-width:280px;width:100%;margin:0 auto 16px;border-radius:8px;background:#fff;padding:8px}
@@ -80,6 +78,11 @@
   .contacto-box{margin-top:12px;text-align:center}
   .contacto{font-weight:700;font-size:1.1rem;color:#fff}
   .btn-wa{display:inline-block;background:#25D366;color:#0b0b0f;font-weight:700;text-decoration:none;padding:11px 18px;border-radius:999px}
+
+  /* Aviso de transferencia */
+  .urgente{border:2px solid var(--rojo);background:rgba(255,90,78,.12);border-radius:10px;padding:18px;text-align:center}
+  .urgente p{margin:0 0 14px;font-weight:800;color:#fff;font-size:.98rem;letter-spacing:.01em}
+  .urgente button{font:inherit;font-weight:800;padding:11px 28px;border:none;border-radius:8px;background:var(--rojo);color:#fff;cursor:pointer}
 
   .contador{font-size:.8rem;color:var(--tenue);text-align:right;margin-top:3px}
   .ayuda{font-size:.88rem;color:var(--suave);margin:0 0 14px}
@@ -93,18 +96,45 @@
   .previa span{flex:1;font-size:.9rem;word-break:break-all}
   .previa button{font:inherit;font-size:.88rem;border:none;background:none;color:var(--error);cursor:pointer;padding:6px;text-decoration:underline}
 
-  /* ── Aceptación y botón ── */
-  .acciones{margin-top:16px;border-radius:14px;padding:18px 22px;border:1px solid var(--linea)}
+  /* Casillas */
   .acepto{display:flex;gap:12px;align-items:flex-start;color:var(--texto);font-size:.92rem;margin:0;cursor:pointer}
   .acepto input{width:20px;height:20px;flex:none;margin:2px 0 0;accent-color:var(--oro);padding:0}
+  .consentimiento{margin-top:18px;padding-top:16px;border-top:1px solid var(--linea)}
+
+  .acciones{margin-top:16px;border-radius:14px;padding:18px 22px;border:1px solid var(--linea)}
   .sin-link{text-decoration:none;color:inherit;cursor:default}
   #terminar{margin-top:16px;width:100%;font:inherit;font-weight:800;font-size:1.05rem;padding:15px;border:none;border-radius:10px;background:var(--oro);color:#111;cursor:pointer}
   #terminar:disabled{background:rgba(255,255,255,.16);color:rgba(255,255,255,.5);cursor:not-allowed}
   #estado{text-align:center;margin-top:12px;min-height:1.4em}
   #estado.error{color:var(--error)}
-  .vista button{margin-top:14px;font:inherit;font-weight:700;padding:11px 20px;border-radius:8px;border:1.5px solid var(--oro);background:transparent;color:#fff;cursor:pointer}
+  .vista button,.btn-sec{margin-top:14px;font:inherit;font-weight:700;padding:11px 20px;border-radius:8px;border:1.5px solid var(--oro);background:transparent;color:#fff;cursor:pointer}
+  .btn-oro,.vista .btn-oro{background:var(--oro);color:#111;border-color:var(--oro)}
+  .btn-oro:disabled,.vista .btn-oro:disabled{background:rgba(255,255,255,.16);border-color:transparent;color:rgba(255,255,255,.5);cursor:not-allowed}
 
-  /* ── Pie con documentos legales ── */
+  /* Acceso del vendedor */
+  .acceso{text-align:left}
+  .acceso h2{text-align:center}
+  .acceso > p{text-align:center}
+  .acceso-form{max-width:340px;margin:18px auto 0}
+  #claveVendedor{text-align:center;font-size:1.25rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
+  .acceso-form .btn-oro{width:100%}
+  .tarjeta-vend{margin-top:22px;border:1.5px solid var(--linea);border-radius:12px;padding:18px;background:rgba(255,255,255,.04);text-align:center}
+  .tarjeta-vend .hola{font-size:1.25rem;font-weight:800;color:#fff;margin:0}
+  .tarjeta-vend .cupo{font-size:2.4rem;font-weight:800;color:var(--oro);line-height:1.1;margin:10px 0 2px}
+  .tarjeta-vend .cupo-txt{color:var(--suave);margin:0}
+  .alerta{margin-top:14px;border-radius:8px;padding:12px 14px;font-weight:700;font-size:.95rem}
+  .alerta.amarilla{background:rgba(201,162,39,.16);border:1px solid rgba(201,162,39,.6);color:#fff}
+  .alerta.roja{background:rgba(255,90,78,.14);border:1px solid var(--rojo);color:#fff}
+  .tarjeta-vend .btn-oro{width:100%}
+
+  /* Barra del vendedor dentro del formulario */
+  .barra-vend{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--linea);border-top:none;padding:12px 22px;font-size:.92rem}
+  .barra-vend b{color:#fff}
+  .barra-vend .chip{margin-left:auto;font-weight:700;border-radius:999px;padding:3px 12px;border:1px solid rgba(255,255,255,.2)}
+  .chip.amarilla{border-color:var(--oro);color:var(--oro)}
+  .chip.roja{border-color:var(--rojo);color:var(--rojo)}
+  .barra-vend button{font:inherit;font-size:.85rem;background:none;border:none;color:var(--tenue);text-decoration:underline;cursor:pointer;padding:0}
+
   .pie{margin-top:18px;text-align:center;font-size:.85rem;background:rgba(0,0,0,.65);border-radius:10px;padding:10px 14px;color:var(--suave)}
   .pie a{margin:0 6px}
 
@@ -134,7 +164,34 @@
     <div class="contacto-box" id="avisoContacto"></div>
   </div>
 
+  <!-- Acceso del vendedor -->
+  <div class="panel vista acceso" id="acceso" hidden>
+    <h2>Clave del vendedor</h2>
+    <p>Ingresa tu clave del día para ver cuántos boletos puedes vender.</p>
+    <form class="acceso-form" id="accesoForm" autocomplete="off">
+      <label for="claveVendedor">Clave del día</label>
+      <input id="claveVendedor" maxlength="9" spellcheck="false" autocapitalize="characters" placeholder="9 caracteres">
+      <div class="msg" id="claveVendMsg"></div>
+      <button type="submit" class="btn-sec btn-oro" id="validarVend" disabled>Continuar</button>
+    </form>
+
+    <div class="tarjeta-vend" id="tarjetaVend" hidden>
+      <p class="hola" id="vendHola"></p>
+      <div class="cupo" id="vendCupo"></div>
+      <p class="cupo-txt" id="vendCupoTxt"></p>
+      <div class="alerta" id="vendAlerta" hidden></div>
+      <button type="button" class="btn-sec btn-oro" id="comenzar">Comenzar venta</button>
+      <button type="button" class="btn-sec" id="otraClave">Usar otra clave</button>
+    </div>
+  </div>
+
   <div id="portal" hidden>
+    <div class="barra-vend" id="barraVend">
+      <span>Vendedor: <b id="barraNombre"></b></span>
+      <span class="chip" id="barraCupo"></span>
+      <button type="button" id="salirVend">Cambiar vendedor</button>
+    </div>
+
     <div id="secciones">
       <!-- SECCIÓN 1 -->
       <details id="sec1" open>
@@ -145,6 +202,13 @@
             <div><label for="apellidos">Apellidos</label><input id="apellidos" autocomplete="off"><div class="msg"></div></div>
             <div><label for="telefono">Número de WhatsApp</label><input id="telefono" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="10 dígitos"><div class="msg"></div></div>
             <div><label for="telefono2">Confirma el WhatsApp</label><input id="telefono2" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="10 dígitos"><div class="msg"></div></div>
+            <div class="ancho"><label for="correo">Correo electrónico</label><input id="correo" type="email" inputmode="email" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="nombre@correo.com"><div class="msg"></div></div>
+          </div>
+          <div class="consentimiento">
+            <label class="acepto">
+              <input type="checkbox" id="aceptaWa">
+              <span>Acepto ser contactado por WhatsApp a este número para completar mi compra y recibir mis boletos.</span>
+            </label>
           </div>
         </div>
       </details>
@@ -158,8 +222,7 @@
               <label for="tipoBoleto">Tipo de boleto</label>
               <select id="tipoBoleto">
                 <option value="">Selecciona…</option>
-                <option value="FCA">FCA</option>
-                <option value="UADY">UADY</option>
+                <option value="UADY">FCA/UADY</option>
                 <option value="EXTERNO">Externo</option>
               </select>
             </div>
@@ -178,10 +241,10 @@
               <select id="cantidad" disabled><option value="">Elige el tipo de boleto</option></select>
             </div>
           </div>
+          <div class="msg" id="ordenMsg"></div>
           <div class="talon" aria-live="polite">
             <span>Costo por boleto</span><strong id="costo">—</strong>
-            <span id="descLbl" class="verde" hidden>Descuento</span><strong id="desc" class="verde" hidden></strong>
-            <span id="totalLbl">Total a pagar</span><strong id="total" class="total">—</strong>
+            <span>Total a pagar</span><strong id="total" class="total">—</strong>
           </div>
         </div>
       </details>
@@ -198,18 +261,20 @@
       <details id="sec4">
         <summary><span class="paso">4</span>Comprobante<span class="flecha">▾</span></summary>
         <div class="cuerpo">
-          <p class="ayuda" id="ayudaClave">Solo necesitas uno de los dos: la clave o la foto del comprobante.</p>
+          <p class="ayuda" id="ayudaClave">Elige primero la forma de pago.</p>
 
-          <label for="clave" id="claveLabel">Ingresa la clave de rastreo del pago</label>
-          <input id="clave" maxlength="18" autocomplete="off" spellcheck="false" style="text-transform:uppercase">
-          <div class="contador"><span id="cuenta">0</span> / <span id="limite">18</span></div>
-          <div class="msg"></div>
+          <div id="bloqueClave">
+            <label for="clave" id="claveLabel">Clave de rastreo del pago</label>
+            <input id="clave" autocomplete="off" spellcheck="false" style="text-transform:uppercase">
+            <div class="contador" id="contador"><span id="cuenta">0</span> caracteres</div>
+            <div class="msg"></div>
+          </div>
 
           <div id="bloqueFoto">
-            <div class="separador">o bien</div>
+            <div class="separador" id="separador">o bien</div>
             <label class="subir" id="subirBox">
               <input type="file" id="foto" accept="image/*">
-              Subir foto del comprobante
+              <span id="subirTxt">Subir foto del comprobante</span>
             </label>
             <div class="previa" id="vista">
               <img id="vistaImg" alt="Vista previa del comprobante">
@@ -237,6 +302,7 @@
   <div class="panel vista" id="exito" role="status" hidden>
     <h2 style="color:var(--ok)">Venta registrada</h2>
     <p id="exitoTexto"></p>
+    <div class="alerta" id="exitoAlerta" hidden></div>
     <button type="button" id="otraCompra">Registrar otra venta</button>
   </div>
 
@@ -250,7 +316,6 @@
 <script>
 
   // ───── Conexión con Apps Script ─────
-  // Pega aquí el link /exec de la implementación de Apps Script del libro de VENDEDORES.
   const API_URL = 'https://script.google.com/macros/s/AKfycbxHuAMN-PM0Bij38FCjgDioJv_1_dkXNBxP5smm9teHICc6xSjIgqBXgT1jldo8kYCt1Q/exec';
 
   async function api(accion, datos){
@@ -272,21 +337,113 @@
     return j.data;
   }
 
-  let PRECIOS = null;    // llegan del servidor según la etapa vigente (incluye FCA con su descuento)
-  let cotizacion = null; // etapa con la que se le mostró el precio
-  // Reglas de la clave por tipo de pago
-  const CLAVES = {
-    EFECTIVO: { largo: 9,  numerica: false, foto: false },
-    TARJETA:  { largo: 10, numerica: false, foto: true  },
-    OTRO:     { largo: 18, numerica: false, foto: true  }   // CODI y transferencia
-  };
-  const NOTA_TERMINAL = 'Continúa el proceso de pago en la terminal. Al terminar, ingresa la clave de rastreo de 10 caracteres del ticket o sube una foto del ticket.';
   const $ = id => document.getElementById(id);
   const dinero = n => '$' + n.toLocaleString('es-MX');
+  const PAGOS_CON_LIMITE = ['EFECTIVO', 'TARJETA'];
+  const AVISO_TRANSFERENCIA = 'ASEGÚRATE DE PONER TU NOMBRE COMPLETO COMO CONCEPTO DE LA TRANSFERENCIA. DE NO HACERLO, SE PODRÍAN PRESENTAR PROBLEMAS AL VALIDAR TU PAGO Y RETRASAR LA ENTREGA DE TUS ACCESOS.';
+  const NOTA_TERMINAL = 'Continúa el proceso de pago en la terminal. Al terminar, sube la foto del ticket en la sección 4.';
 
+  // Reglas del comprobante por tipo de pago
+  //  clave: 'vendedor' (se llena sola) | 'obligatoria' | 'opcional' (clave O foto)
+  //  foto:  'no' | 'obligatoria' | 'opcional'
+  const COMPROBANTE = {
+    EFECTIVO:      { clave: 'vendedor',    foto: 'no' },
+    TARJETA:       { clave: 'vendedor',    foto: 'obligatoria' },
+    TRANSFERENCIA: { clave: 'obligatoria', foto: 'obligatoria' },
+    CODI:          { clave: 'opcional',    foto: 'opcional' }
+  };
+
+  let PRECIOS = null;
+  let cotizacion = null;
+  let vendedor = null;          // resumen que devuelve el script
   let infoPagoCargada = false;
+  let ultimaInfoPago = null;
+  let avisoTransferAceptado = false;
   let consultaActual = 0;
-  let foto = null; // { base64, mimeType }
+  let foto = null;              // { base64, mimeType }
+
+  // ───── Acceso del vendedor ─────
+  const limpiarClaveVend = v => v.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 9);
+
+  $('claveVendedor').addEventListener('input', e => {
+    e.target.value = limpiarClaveVend(e.target.value);
+    $('claveVendMsg').textContent = '';
+    e.target.classList.remove('invalido');
+    $('validarVend').disabled = e.target.value.length !== 9;
+  });
+
+  $('accesoForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const clave = $('claveVendedor').value;
+    if (clave.length !== 9) return;
+    const btn = $('validarVend');
+    btn.disabled = true; btn.textContent = 'Revisando…';
+    api('vendedor', { claveVendedor: clave })
+      .then(v => { vendedor = v; guardarClave(clave); pintarVendedor(); })
+      .catch(err => {
+        $('claveVendMsg').textContent = err.message;
+        $('claveVendedor').classList.add('invalido');
+      })
+      .finally(() => { btn.textContent = 'Continuar'; btn.disabled = $('claveVendedor').value.length !== 9; });
+  });
+
+  function textoCupo(v){
+    if (v.restantes === null) return { num: 'Sin límite', txt: 'en efectivo y tarjeta' };
+    return { num: String(v.restantes), txt: (v.restantes === 1 ? 'boleto disponible' : 'boletos disponibles') + ' en efectivo y tarjeta' };
+  }
+  function htmlAlertaVend(v){
+    if (v.agotado) return { cls: 'roja', txt: 'Llegaste a tu límite de boletos. Ya no puedes vender en efectivo ni tarjeta; aún puedes vender por CODI o transferencia.' };
+    if (v.alerta) return { cls: 'amarilla', txt: 'Atención: te ' + (v.restantes === 1 ? 'queda 1 boleto' : 'quedan ' + v.restantes + ' boletos') + ' antes de llegar a tu límite.' };
+    return null;
+  }
+
+  function pintarVendedor(){
+    const v = vendedor, c = textoCupo(v), a = htmlAlertaVend(v);
+    $('accesoForm').hidden = true;
+    $('tarjetaVend').hidden = false;
+    $('vendHola').textContent = 'Hola, ' + v.nombre;
+    $('vendCupo').textContent = c.num;
+    $('vendCupoTxt').textContent = c.txt;
+    $('vendAlerta').hidden = !a;
+    if (a){ $('vendAlerta').className = 'alerta ' + a.cls; $('vendAlerta').textContent = a.txt; }
+    actualizarBarra();
+  }
+
+  function actualizarBarra(){
+    if (!vendedor) return;
+    const v = vendedor, chip = $('barraCupo');
+    $('barraNombre').textContent = v.nombre;
+    chip.textContent = v.restantes === null ? 'Sin límite' : (v.agotado ? 'Límite alcanzado' : 'Quedan ' + v.restantes);
+    chip.className = 'chip' + (v.agotado ? ' roja' : v.alerta ? ' amarilla' : '');
+    // Si llegó a su límite, efectivo y tarjeta dejan de estar disponibles
+    document.querySelectorAll('#tipoPago option').forEach(o => {
+      if (PAGOS_CON_LIMITE.indexOf(o.value) !== -1) o.disabled = !!v.agotado;
+    });
+    if (v.agotado && PAGOS_CON_LIMITE.indexOf($('tipoPago').value) !== -1){
+      $('tipoPago').value = '';
+      ajustarComprobante(); cambioOrden();
+    }
+  }
+
+  function mostrarAcceso(){
+    vendedor = null;
+    borrarClave();
+    $('claveVendedor').value = '';
+    $('validarVend').disabled = true;
+    $('claveVendMsg').textContent = '';
+    $('accesoForm').hidden = false;
+    $('tarjetaVend').hidden = true;
+    mostrarVista('acceso');
+    setTimeout(() => $('claveVendedor').focus(), 50);
+  }
+  $('otraClave').addEventListener('click', mostrarAcceso);
+  $('salirVend').addEventListener('click', () => { reiniciarFormulario(false); mostrarAcceso(); });
+  $('comenzar').addEventListener('click', () => { mostrarVista('portal'); window.scrollTo(0, 0); actualizarEstado(); });
+
+  // Recordar la clave mientras la pestaña siga abierta
+  function guardarClave(c){ try { sessionStorage.setItem('claveVendedor', c); } catch(e){} }
+  function borrarClave(){ try { sessionStorage.removeItem('claveVendedor'); } catch(e){} }
+  function claveGuardada(){ try { return sessionStorage.getItem('claveVendedor') || ''; } catch(e){ return ''; } }
 
   // ───── Validaciones ─────
   function marcar(input, mensaje){
@@ -294,42 +451,48 @@
     input.classList.toggle('invalido', !!mensaje);
     if (msg) msg.textContent = mensaje || '';
   }
+  const correoValido = v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
 
   function validarSec1(mostrar){
-    const n = $('nombres'), a = $('apellidos'), t = $('telefono'), t2 = $('telefono2');
+    const n = $('nombres'), a = $('apellidos'), t = $('telefono'), t2 = $('telefono2'), c = $('correo');
     const errs = {
       n: n.value.trim() ? '' : 'Escribe el/los nombre(s).',
       a: a.value.trim() ? '' : 'Escribe los apellidos.',
       t: /^\d{10}$/.test(t.value) ? '' : 'Debe tener 10 dígitos.',
-      t2: !/^\d{10}$/.test(t2.value) ? 'Debe tener 10 dígitos.' : (t2.value !== t.value ? 'Los números no coinciden.' : '')
+      t2: !/^\d{10}$/.test(t2.value) ? 'Debe tener 10 dígitos.' : (t2.value !== t.value ? 'Los números no coinciden.' : ''),
+      c: correoValido(c.value) ? '' : 'Escribe un correo válido.'
     };
     if (mostrar){
       if (mostrar === true || mostrar === n) marcar(n, errs.n);
       if (mostrar === true || mostrar === a) marcar(a, errs.a);
       if (mostrar === true || mostrar === t) marcar(t, errs.t);
       if (mostrar === true || mostrar === t2 || (mostrar === t && t2.value)) marcar(t2, errs.t2);
+      if (mostrar === true || mostrar === c) marcar(c, errs.c);
     }
-    return !errs.n && !errs.a && !errs.t && !errs.t2;
+    return !errs.n && !errs.a && !errs.t && !errs.t2 && !errs.c && $('aceptaWa').checked;
   }
 
-  const validarSec2 = () => $('tipoBoleto').value && $('tipoPago').value && $('cantidad').value;
-
-  const reglaClave = () => CLAVES[$('tipoPago').value] || CLAVES.OTRO;
-  function claveValida(){
-    const r = reglaClave(), v = $('clave').value.trim().toUpperCase();
-    return new RegExp('^' + (r.numerica ? '\\d' : '[A-Z0-9]') + '{' + r.largo + '}$').test(v);
+  // Revisa que la cantidad no pase el cupo del vendedor en efectivo y tarjeta
+  function errorCupo(){
+    const pago = $('tipoPago').value, cant = Number($('cantidad').value);
+    if (!vendedor || PAGOS_CON_LIMITE.indexOf(pago) === -1 || vendedor.restantes === null || !cant) return '';
+    if (vendedor.restantes === 0) return 'Llegaste a tu límite de boletos en efectivo y tarjeta.';
+    if (cant > vendedor.restantes) return 'Solo puedes vender ' + vendedor.restantes + (vendedor.restantes === 1 ? ' boleto más' : ' boletos más') + ' en efectivo o tarjeta.';
+    return '';
   }
-  function mensajeClave(){
-    const r = reglaClave();
-    return 'La clave debe tener ' + r.largo + (r.numerica ? ' dígitos.' : ' caracteres.');
-  }
+  const validarSec2 = () => $('tipoBoleto').value && $('tipoPago').value && $('cantidad').value && !errorCupo();
 
-  // Efectivo: clave obligatoria. Los demás: clave válida O foto.
+  const reglaComprobante = () => COMPROBANTE[$('tipoPago').value] || null;
   function validarSec4(){
-    const hayClave = $('clave').value.trim() !== '';
-    if (hayClave && !claveValida()) return false;
-    if (!reglaClave().foto) return hayClave;
-    return hayClave || !!foto;
+    const r = reglaComprobante();
+    if (!r) return false;
+    const clave = $('clave').value.trim();
+    const claveOk = r.clave === 'vendedor' ? !!(vendedor && clave === vendedor.clave) : /^[A-Z0-9]+$/i.test(clave);
+    const hayFoto = !!foto;
+    if (r.clave === 'opcional') return claveOk || hayFoto;          // CODI
+    if (!claveOk) return false;
+    if (r.foto === 'obligatoria') return hayFoto;
+    return true;
   }
 
   function actualizarEstado(){
@@ -338,19 +501,21 @@
     $('sec2').classList.toggle('hecho', s2);
     $('sec3').classList.toggle('hecho', s3);
     $('sec4').classList.toggle('hecho', s4);
-    $('terminar').disabled = !(s1 && s2 && s3 && s4 && $('acepta').checked);
+    $('terminar').disabled = !(vendedor && s1 && s2 && s3 && s4 && $('acepta').checked);
   }
 
   // ───── Sección 1 ─────
-  ['nombres','apellidos','telefono','telefono2'].forEach(id => {
+  ['nombres','apellidos','telefono','telefono2','correo'].forEach(id => {
     const el = $(id);
     el.addEventListener('input', () => {
       if (id.startsWith('telefono')) el.value = el.value.replace(/\D/g,'').slice(0,10);
+      if (id === 'correo') el.value = el.value.replace(/\s/g,'');
       if (el.classList.contains('invalido')) validarSec1(el);
       actualizarEstado();
     });
     el.addEventListener('blur', () => { if (el.value) validarSec1(el); });
   });
+  $('aceptaWa').addEventListener('change', actualizarEstado);
 
   // ───── Sección 2 ─────
   function llenarCantidad(){
@@ -361,42 +526,26 @@
       sel.innerHTML = '<option value="">Elige el tipo de boleto</option>';
       sel.disabled = true; return;
     }
-    const max = tipo === 'EXTERNO' ? 10 : 1;  // FCA y UADY: 1 boleto por compra
+    const max = tipo === 'EXTERNO' ? 10 : 1;  // FCA/UADY: 1 boleto por compra
     for (let i = 1; i <= max; i++) sel.add(new Option(i, i));
     sel.disabled = max === 1;
     sel.value = (anterior && Number(anterior) <= max) ? anterior : '1';
   }
 
-  // Talón: si hay descuento, el costo normal va tachado en gris y descuento/total en verde
-  function pintarTalon(precio, descuento, cant){
-    const costo = $('costo'), total = $('total');
-    const conDesc = precio != null && descuento > 0;
-    if (precio == null){
-      costo.textContent = '—'; total.textContent = '—';
-    } else {
-      costo.textContent = dinero(precio + (descuento || 0));
-      total.textContent = cant ? dinero(precio * cant) : '—';
-      $('desc').textContent = '-' + dinero(descuento * (cant || 1));
-    }
-    costo.classList.toggle('tachado', conDesc);
-    total.classList.toggle('verde', conDesc);
-    $('totalLbl').classList.toggle('verde', conDesc);
-    $('totalLbl').textContent = conDesc ? 'Total' : 'Total a pagar';
-    $('descLbl').hidden = $('desc').hidden = !conDesc;
-  }
-
   function calcularTotales(){
     const tipo = $('tipoBoleto').value, pago = $('tipoPago').value, cant = Number($('cantidad').value);
-    if (!tipo || !pago || !PRECIOS || !PRECIOS[tipo]) return pintarTalon(null);
-    const p = PRECIOS[tipo];
-    pintarTalon(pago === 'TARJETA' ? p.tarjeta : p.otro, Number(p.descuento) || 0, cant);
+    if (!tipo || !pago || !PRECIOS || !PRECIOS[tipo]){ $('costo').textContent = '—'; $('total').textContent = '—'; return; }
+    const precio = pago === 'TARJETA' ? PRECIOS[tipo].tarjeta : PRECIOS[tipo].otro;
+    $('costo').textContent = dinero(precio);
+    $('total').textContent = cant ? dinero(precio * cant) : '—';
   }
 
   $('tipoBoleto').addEventListener('change', () => { llenarCantidad(); cambioOrden(); });
-  $('tipoPago').addEventListener('change', () => { ajustarCampoClave(); cambioOrden(); });
+  $('tipoPago').addEventListener('change', () => { avisoTransferAceptado = false; ajustarComprobante(); cambioOrden(); });
   $('cantidad').addEventListener('change', cambioOrden);
 
   function cambioOrden(){
+    $('ordenMsg').textContent = errorCupo();
     calcularTotales();
     cargarInfoPago();
     actualizarEstado();
@@ -407,6 +556,7 @@
     const cont = $('infoPago');
     infoPagoCargada = false;
     cotizacion = null;
+    ultimaInfoPago = null;
     if (!validarSec2()){
       cont.innerHTML = '<p class="aviso">Por favor completa las secciones anteriores.</p>';
       return;
@@ -414,7 +564,15 @@
     const id = ++consultaActual;
     cont.innerHTML = '<p class="aviso">Cargando datos de pago…</p>';
     api('infoPago', { tipoBoleto: $('tipoBoleto').value, tipoPago: $('tipoPago').value, cantidad: Number($('cantidad').value) })
-      .then(r => { if (id === consultaActual) pintarInfoPago(r); })
+      .then(r => {
+        if (id !== consultaActual) return;
+        ultimaInfoPago = r;
+        aplicarEtapa(r.etapa, r.precios);
+        cotizacion = r.cotizacion;
+        if ($('tipoPago').value === 'TRANSFERENCIA' && !avisoTransferAceptado) pintarAvisoTransfer();
+        else pintarInfoPago(r);
+        $('sec3').open = true;
+      })
       .catch(e => {
         if (id !== consultaActual) return;
         if (e.message.indexOf('VENTA_CERRADA') !== -1) return cargarEstadoVenta();
@@ -422,66 +580,79 @@
       });
   }
 
-  function htmlDesglose(r){
-    return '<div class="talon desglose">' +
-      '<span>Costo por boleto</span><strong class="tachado">' + dinero(r.precioLista) + '</strong>' +
-      '<span class="verde">Descuento</span><strong class="verde">-' + dinero(r.descuento * r.cantidad) + '</strong>' +
-      '<span class="verde">Total</span><strong class="total verde">' + dinero(r.total) + '</strong>' +
-      '</div>';
+  // Transferencia: primero el aviso; los datos se muestran al presionar Aceptar
+  function pintarAvisoTransfer(){
+    $('infoPago').innerHTML = '<div class="urgente" role="alert"><p>' + escapar(AVISO_TRANSFERENCIA) + '</p>' +
+      '<button type="button" id="aceptarAviso">Aceptar</button></div>';
+    $('aceptarAviso').addEventListener('click', () => {
+      avisoTransferAceptado = true;
+      if (ultimaInfoPago) pintarInfoPago(ultimaInfoPago);
+    });
+    infoPagoCargada = false;
+    actualizarEstado();
   }
 
   function pintarInfoPago(r){
-    const cont = $('infoPago');
-    aplicarEtapa(r.etapa, r.precios);
-    pintarTalon(r.precio, r.descuento, r.cantidad);
-    cotizacion = r.cotizacion;
     let html = '';
     if ($('tipoPago').value === 'TARJETA') html += '<p class="pago-nota">' + escapar(NOTA_TERMINAL) + '</p>';
     if (r.dato){
       if (r.dato.tipo === 'imagen') html += '<img class="pago-img" alt="Código o datos para realizar el pago" src="' + escapar(r.dato.url) + '">';
       else if (r.dato.tipo === 'texto') html += '<p class="datos">' + escapar(r.dato.texto) + '</p>';
     }
-    if (r.descuento > 0) html += htmlDesglose(r);
-    else html += r.resumen ? '<p class="resumen">' + escapar(r.resumen) + '</p>'
-                           : '<p class="aviso">Total a pagar: ' + dinero(r.total) + '</p>';
-    cont.innerHTML = html;
+    html += r.resumen ? '<p class="resumen">' + escapar(r.resumen) + '</p>'
+                      : '<p class="aviso">Total a pagar: ' + dinero(r.total) + '</p>';
+    $('infoPago').innerHTML = html;
     infoPagoCargada = true;
-    $('sec3').open = true;
     actualizarEstado();
   }
 
   // ───── Sección 4 ─────
-  function ajustarCampoClave(){
-    const clave = $('clave'), pago = $('tipoPago').value, r = reglaClave();
-    $('claveLabel').textContent =
-      pago === 'EFECTIVO' ? 'Ingresa la clave de rastreo del pago en efectivo (9 caracteres)' :
-      pago === 'TARJETA'  ? 'Ingresa la clave de rastreo del ticket de la terminal (10 caracteres)' :
-                            'Ingresa la clave de rastreo del pago';
-    // Efectivo: sin foto
-    $('bloqueFoto').hidden = !r.foto;
-    $('ayudaClave').hidden = !r.foto;
-    if (!r.foto && foto) quitarFoto();
+  function ajustarComprobante(){
+    const r = reglaComprobante(), clave = $('clave');
+    marcar(clave, '');
+    if (!r){
+      $('ayudaClave').textContent = 'Elige primero la forma de pago.';
+      $('bloqueClave').hidden = true; $('bloqueFoto').hidden = true;
+      clave.value = ''; clave.readOnly = false;
+      return actualizarEstado();
+    }
+    $('bloqueClave').hidden = false;
+    $('bloqueFoto').hidden = r.foto === 'no';
+    $('separador').hidden = r.clave !== 'opcional';
+    if (r.foto === 'no' && foto) quitarFoto();
 
-    clave.value = clave.value.replace(r.numerica ? /\D/g : /[^a-zA-Z0-9]/g, '').slice(0, r.largo);
-    clave.maxLength = r.largo;
-    clave.inputMode = r.numerica ? 'numeric' : 'text';
-    $('limite').textContent = r.largo;
+    if (r.clave === 'vendedor'){
+      clave.value = vendedor ? vendedor.clave : '';
+      clave.readOnly = true;
+      $('contador').hidden = true;
+      $('claveLabel').textContent = 'Clave del vendedor (se llena sola)';
+    } else {
+      if (clave.readOnly) clave.value = '';
+      clave.readOnly = false;
+      clave.removeAttribute('maxlength');
+      $('contador').hidden = false;
+      $('claveLabel').textContent = 'Clave de rastreo del pago';
+    }
+    $('subirTxt').textContent = $('tipoPago').value === 'TARJETA' ? 'Subir foto del ticket de la terminal' : 'Subir foto del comprobante';
+    $('ayudaClave').textContent = {
+      EFECTIVO: 'En efectivo solo se registra tu clave de vendedor; no se sube foto.',
+      TARJETA: 'Se registra tu clave de vendedor. Sube también la foto del ticket de la terminal.',
+      TRANSFERENCIA: 'Se necesitan las dos: la clave de rastreo y la foto del comprobante.',
+      CODI: 'Solo necesitas uno de los dos: la clave de rastreo o la foto del comprobante.'
+    }[$('tipoPago').value];
     $('cuenta').textContent = clave.value.length;
-    marcar(clave, clave.value && !claveValida() ? mensajeClave() : '');
+    actualizarEstado();
   }
 
   $('clave').addEventListener('input', e => {
-    const r = reglaClave();
-    e.target.value = e.target.value.replace(r.numerica ? /\D/g : /[^a-zA-Z0-9]/g, '').slice(0, r.largo);
+    if (e.target.readOnly) return;
+    e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
     $('cuenta').textContent = e.target.value.length;
     marcar(e.target, '');
     actualizarEstado();
   });
-  $('clave').addEventListener('blur', e => {
-    if (e.target.value && !claveValida()) marcar(e.target, mensajeClave() + (foto ? ' Complétala o bórrala.' : ''));
-  });
 
-  // Foto desde galería: se reduce a máx. 1000 px (límite de imágenes de Google Sheets)
+  // Foto desde galería o cámara: se reduce a máx. 1000 px (límite de imágenes de Google Sheets)
   $('foto').addEventListener('change', async e => {
     const archivo = e.target.files[0];
     $('fotoMsg').textContent = '';
@@ -542,26 +713,34 @@
     btn.disabled = true; btn.textContent = 'Registrando…';
     estado.className = ''; estado.textContent = '';
 
+    const r = reglaComprobante();
     const datos = {
+      claveVendedor: vendedor.clave,
       nombres: $('nombres').value.trim(),
       apellidos: $('apellidos').value.trim(),
       telefono: $('telefono').value,
       telefonoConfirmacion: $('telefono2').value,
+      correo: $('correo').value.trim(),
+      aceptaWhatsapp: $('aceptaWa').checked,
       tipoBoleto: $('tipoBoleto').value,
       tipoPago: $('tipoPago').value,
       cantidad: Number($('cantidad').value),
-      claveRastreo: $('clave').value.trim().toUpperCase(),
-      foto: reglaClave().foto ? foto : null,
+      claveRastreo: r.clave === 'vendedor' ? '' : $('clave').value.trim().toUpperCase(),
+      foto: r.foto === 'no' ? null : foto,
       cotizacion: cotizacion,
       acepta: $('acepta').checked
     };
 
     api('registrar', { datos: datos })
-      .then(r => {
+      .then(res => {
+        if (res.vendedor){ vendedor = res.vendedor; actualizarBarra(); }
         mostrarVista('exito');
         window.scrollTo(0, 0);
-        $('exitoTexto').textContent = 'Se registraron ' + r.cantidad + (r.cantidad === 1 ? ' boleto' : ' boletos') +
-          ' a nombre de ' + datos.nombres + ' ' + datos.apellidos + ' por un total de ' + dinero(r.total) + '.';
+        $('exitoTexto').textContent = 'Se registraron ' + res.cantidad + (res.cantidad === 1 ? ' boleto' : ' boletos') +
+          ' a nombre de ' + datos.nombres + ' ' + datos.apellidos + ' por un total de ' + dinero(res.total) + '.';
+        const a = vendedor ? htmlAlertaVend(vendedor) : null;
+        $('exitoAlerta').hidden = !a;
+        if (a){ $('exitoAlerta').className = 'alerta ' + a.cls; $('exitoAlerta').textContent = a.txt; }
       })
       .catch(e => {
         btn.textContent = 'Terminar'; actualizarEstado();
@@ -584,7 +763,7 @@
   }
 
   function mostrarVista(v){
-    ['cargando','portal','avisoVenta','exito'].forEach(id => { $(id).hidden = id !== v; });
+    ['cargando','acceso','portal','avisoVenta','exito'].forEach(id => { $(id).hidden = id !== v; });
     $('instrucciones').hidden = v !== 'portal';
     if (v === 'avisoVenta' || v === 'cargando') $('etapaTxt').textContent = '';
   }
@@ -631,12 +810,19 @@
         contacto = r.contacto || '';
         aplicarLegales(r.legales);
         if (!$('exito').hidden) return;
-        if (r.abierta){
-          aplicarEtapa(r.etapa, r.precios);
-          mostrarVista('portal');
-          return;
+        if (!r.abierta) return mostrarAviso(r);
+        aplicarEtapa(r.etapa, r.precios);
+        if (vendedor && !$('portal').hidden) return;     // ya está vendiendo
+        if (vendedor) return mostrarVista('portal');
+        // Si la pestaña ya tenía una clave validada, se vuelve a revisar sola
+        const guardada = claveGuardada();
+        if (guardada){
+          $('claveVendedor').value = guardada;
+          return api('vendedor', { claveVendedor: guardada })
+            .then(v => { vendedor = v; mostrarVista('acceso'); pintarVendedor(); })
+            .catch(() => mostrarAcceso());
         }
-        mostrarAviso(r);
+        mostrarAcceso();
       })
       .catch(e => {
         if (!$('cargando').hidden){
@@ -653,18 +839,20 @@
   $('acepta').addEventListener('change', actualizarEstado);
 
   // ───── Registrar otra venta ─────
-  function reiniciarFormulario(){
-    ['nombres','apellidos','telefono','telefono2','clave'].forEach(id => { $(id).value = ''; marcar($(id), ''); });
+  function reiniciarFormulario(recargar){
+    ['nombres','apellidos','telefono','telefono2','correo','clave'].forEach(id => { $(id).value = ''; marcar($(id), ''); });
+    $('aceptaWa').checked = false;
     $('tipoBoleto').value = '';
     $('tipoPago').value = '';
     llenarCantidad();
-
     quitarFoto();
-    ajustarCampoClave();
-    $('cuenta').textContent = '0';
+    avisoTransferAceptado = false;
+    ajustarComprobante();
+    $('ordenMsg').textContent = '';
 
     cotizacion = null;
     infoPagoCargada = false;
+    ultimaInfoPago = null;
     consultaActual++;
     $('infoPago').innerHTML = '<p class="aviso">Por favor completa las secciones anteriores.</p>';
     calcularTotales();
@@ -672,15 +860,18 @@
     $('terminar').textContent = 'Terminar';
     $('estado').className = ''; $('estado').textContent = '';
     ['sec1','sec2','sec3','sec4'].forEach((id, i) => { $(id).open = i === 0; });
-
     $('acepta').checked = false;
-    mostrarVista('portal');
-    window.scrollTo(0, 0);
+    if (recargar !== false){
+      mostrarVista('portal');
+      window.scrollTo(0, 0);
+      actualizarBarra();
+      cargarEstadoVenta();
+    }
     actualizarEstado();
-    cargarEstadoVenta();
   }
-  $('otraCompra').addEventListener('click', reiniciarFormulario);
+  $('otraCompra').addEventListener('click', () => reiniciarFormulario(true));
 
+  ajustarComprobante();
   cargarEstadoVenta();
   actualizarEstado();
 </script>
